@@ -4,11 +4,6 @@
         TOOL = {};
     }
 
-    TOOL["layer"] = {};
-
-    if (!layer) {
-        // 加载layer
-    }
     // 封装layer，进行简单的弹窗提示
     TOOL.layer = {
         success: function(msg, option) {
