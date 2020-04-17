@@ -83,16 +83,19 @@ function _ajax_format(url, async, data, successHandler, errHandler) {
  * @param ajaxType      "get" or "post"
  */
 function _sendRequest(url, async, data, handler, errHandler, ajaxType) {
-    $.ajax({
+    var ajaxData = {
         url: url,
         async: async,
         type: ajaxType,
         contentType : "application/json;charset=UTF-8",
         dataType : 'json',
-        data: JSON.stringify(data),
         success: handler,
         error: errHandler
-    });
+    };
+    if (data) {
+        ajaxData.data = JSON.stringify(data);
+    }
+    $.ajax(ajaxData);
 }
 
 window.REQUEST_TOOL = REQUEST_TOOL;
