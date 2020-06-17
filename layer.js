@@ -55,26 +55,29 @@
     // 带按钮的弹窗
     layer.open = function(title, content, options) {
         // 1、 构造一个遮罩层
-        showShade();
+        _showShade();
         // 2、 构造一个简单弹窗
-        showOpenDiv();
+        _showOpenDiv(title, content, options);
     };
     // 遮罩
-    function showShade() {
+    function _showShade() {
         var shadeDiv = document.createElement("div");
-           // width:100%;height: 100%;background-color: rgb(0, 0, 0); opacity: 0.3;z-index: 19891017;position: fixed;
-        shadeDiv.style.width = "100%";
-        shadeDiv.style.height = "100%";
+        shadeDiv.style.width = window.innerWidth + "px";
+        shadeDiv.style.height = window.innerHeight + "px";
         shadeDiv.style.backgroundColor = "rgb(0, 0, 0)";
         shadeDiv.style.opacity = 0.3;
         shadeDiv.style.zIndex = 19891017;
+        shadeDiv.style.top = 0;
+        shadeDiv.style.left = 0;
         shadeDiv.style.position = "fixed";
+        shadeDiv.id = "layer-open-shade";
         document.body.append(shadeDiv);
     }
     // 创建弹窗div
-    function showOpenDiv() {
+    function _showOpenDiv(title, content, options) {
         // 1、 构造大的div
         var openDiv = document.createElement("div");
+        openDiv.id = "layer-open-div";
         openDiv.style.width = "260px";
         openDiv.style.height = "154px";
         openDiv.style.position = "fixed";
@@ -84,13 +87,17 @@
         openDiv.style.boxShadow = "1px 1px 50px rgba(0,0,0,.3)";
         // 居中显示
         //  获取可视化区域大小，计算显示位置
-        var clientWidth = window.screen.availWidth;
-        var clientHeight = window.screen.availHeight;
+        var clientWidth = window.innerWidth;
+        var clientHeight = window.innerHeight;
         openDiv.style.left = (((clientWidth - 260) / 2) - 130) + "px";
         openDiv.style.top = (((clientHeight - 154) / 2) - 77) + "px";
         // 2、 构造title
         var titleDiv = document.createElement("div");
-        titleDiv.innerText = "在线调试";
+        var defaultTitle = "在线调试";
+        if (!title) {
+            title = defaultTitle;
+        }
+        titleDiv.innerText = title;
         titleDiv.style.padding = "0 80px 0 20px";
         titleDiv.style.height = "42px";
         titleDiv.style.lineHeight = "42px";
@@ -102,7 +109,11 @@
         titleDiv.style.borderRadius = "2px 2px 0 0";
         // 3、 构造content
         var contentDiv = document.createElement("div");
-        contentDiv.innerText = "填写内容";
+        var defaultContent = "显示内容";
+        if (!content) {
+            content = defaultContent;
+        }
+        contentDiv.innerText = content;
         contentDiv.style.position = "relative";
         contentDiv.style.padding = "20px";
         contentDiv.style.lineHight = "24px";
@@ -116,8 +127,21 @@
         btnDiv.style.padding = "0 15px 12px";
         btnDiv.style.pointerEvents = "auto";
 
-        var btn1 = createBtn("确定");
-        var btn2 = createBtn("取消");
+        var btn1 = _createBtn("确定");
+        btn1.id = "layer-open-btn-yes";
+        // 增加默认的关闭事件
+        btn1.addEventListener("click", _defaultCloseFunction);
+        if (options && options.yes) {
+            btn1.addEventListener("click", options.yes);
+        }
+
+        var btn2 = _createBtn("取消");
+        btn2.id = "layer-open-btn-cancel";
+        // 增加默认的关闭事件
+        btn2.addEventListener("click", _defaultCloseFunction);
+        if (options && options.cancel) {
+            btn2.addEventListener("click", options.cancel);
+        }
 
         openDiv.append(titleDiv);
         openDiv.append(contentDiv);
@@ -128,7 +152,7 @@
         document.body.append(openDiv);
     }
     // 创建按钮
-    function createBtn(content) {
+    function _createBtn(content) {
         var btn1 = document.createElement("a");
         btn1.style.height = "28px";
         btn1.style.lineHeight = "28px";
@@ -145,6 +169,13 @@
         btn1.style.display = "inline-block";
         btn1.innerText = content;
         return btn1;
+    }
+    // 默认关闭事件
+    function _defaultCloseFunction() {
+        var shade = document.getElementById("layer-open-shade");
+        var openDIV = document.getElementById("layer-open-div");
+        shade.remove();
+        openDIV.remove();
     }
 
     w.layer = layer;
