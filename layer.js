@@ -24,10 +24,7 @@
         for (var key in styleOptions) {
             element.style[key] = styleOptions[key];
         }
-        if (!msg) {
-            msg = "提示信息";
-        }
-        element.innerText = msg;
+        element.innerText = msg?msg:'提示信息';
         // 获取浏览器可视化区域大小
         var height = document.documentElement.clientHeight;
         var width = document.documentElement.clientWidth;
@@ -62,14 +59,15 @@
     // 遮罩
     function _showShade() {
         var shadeDiv = document.createElement("div");
-        shadeDiv.style.width = window.innerWidth + "px";
-        shadeDiv.style.height = window.innerHeight + "px";
-        shadeDiv.style.backgroundColor = "rgb(0, 0, 0)";
-        shadeDiv.style.opacity = 0.3;
-        shadeDiv.style.zIndex = 19891017;
-        shadeDiv.style.top = 0;
-        shadeDiv.style.left = 0;
-        shadeDiv.style.position = "fixed";
+        shadeDiv.style.cssText=`
+            width:100%;
+            height:100%;
+            background-color:rgba(0, 0, 0,0.3);
+            zIndex:19891017;
+            position:fixed;
+            top:0;
+            left:0;
+        `
         shadeDiv.id = "layer-open-shade";
         document.body.append(shadeDiv);
     }
@@ -77,55 +75,63 @@
     function _showOpenDiv(title, content, options) {
         // 1、 构造大的div
         var openDiv = document.createElement("div");
+        openDiv.style.cssText=`
+            width:260px;
+            height:154px;
+            position:fixed;
+            zIndex:19891018;
+            border-radius:2px;
+            background-color:#fff;
+            box-shadow:1px 1px 50px rgba(0,0,0,.3);
+        `
         openDiv.id = "layer-open-div";
-        openDiv.style.width = "260px";
-        openDiv.style.height = "154px";
-        openDiv.style.position = "fixed";
-        openDiv.style.zIndex = 19891018;
-        openDiv.style.borderRadius = "2px";
-        openDiv.style.backgroundColor = "#fff";
-        openDiv.style.boxShadow = "1px 1px 50px rgba(0,0,0,.3)";
         // 居中显示
         //  获取可视化区域大小，计算显示位置
         var clientWidth = window.innerWidth;
         var clientHeight = window.innerHeight;
-        openDiv.style.left = (((clientWidth - 260) / 2) - 130) + "px";
-        openDiv.style.top = (((clientHeight - 154) / 2) - 77) + "px";
+        openDiv.style.left = ((clientWidth - 260) / 2) + "px";
+        openDiv.style.top = ((clientHeight - 154) / 2) + "px";
+
+        //监听window大小变化
+        window.addEventListener('resize',(res)=>{
+            openDiv.style.left = ((res.target.innerWidth - 260) / 2) + "px";
+            openDiv.style.top = ((res.target.innerHeight - 154) / 2) + "px";
+        })
+
         // 2、 构造title
         var titleDiv = document.createElement("div");
-        var defaultTitle = "在线调试";
-        if (!title) {
-            title = defaultTitle;
-        }
-        titleDiv.innerText = title;
-        titleDiv.style.padding = "0 80px 0 20px";
-        titleDiv.style.height = "42px";
-        titleDiv.style.lineHeight = "42px";
-        titleDiv.style.borderBottom = "1px solid #eee";
-        titleDiv.style.fontSize = "14px";
-        titleDiv.style.color = "#333";
-        titleDiv.style.overflow = "hidden";
-        titleDiv.style.backgroundColor = "#F8F8F8";
-        titleDiv.style.borderRadius = "2px 2px 0 0";
+        titleDiv.innerText = title?title:'在线调试';
+        titleDiv.style.cssText=`
+            height:42px;
+            border-bottom:1px solid #eee;
+            padding:0 80px 0 20px;
+            line-height:42px;
+            font-size:14px;
+            color:#333;
+            overflow:hidden;
+            background-color:#F8F8F8;
+            border-radius:2px 2px 0 0;
+        `
+
         // 3、 构造content
         var contentDiv = document.createElement("div");
-        var defaultContent = "显示内容";
-        if (!content) {
-            content = defaultContent;
-        }
-        contentDiv.innerText = content;
-        contentDiv.style.position = "relative";
-        contentDiv.style.padding = "20px";
-        contentDiv.style.lineHight = "24px";
-        contentDiv.style.wordBreak = "break-all";
-        contentDiv.style.fontSize = "14px";
-        contentDiv.style.overflowX = "hidden";
-        contentDiv.style.overflowY = "auto";
+        contentDiv.innerText = content?content:'显示内容';
+        contentDiv.style.cssText=`
+            position:relative;
+            padding:20px;
+            line-hight:24px;
+            word-break:break-all;
+            font-size:14px;
+            overflowX:hidden;
+            overflowY:auto;
+        `
         // 4、 构造btn
         var btnDiv = document.createElement("div");
-        btnDiv.style.textAlign = "right";
-        btnDiv.style.padding = "0 15px 12px";
-        btnDiv.style.pointerEvents = "auto";
+        btnDiv.style.cssText=`
+            text-align:right;
+            padding:0 15px 12px;
+            pointer-events:auto;
+        `
 
         var btn1 = _createBtn("确定");
         btn1.id = "layer-open-btn-yes";
@@ -154,19 +160,21 @@
     // 创建按钮
     function _createBtn(content) {
         var btn1 = document.createElement("a");
-        btn1.style.height = "28px";
-        btn1.style.lineHeight = "28px";
-        btn1.style.margin = "5px 5px 0";
-        btn1.style.padding = "0 15px";
-        btn1.style.border = "1px solid #dedede";
-        btn1.style.borderRadius = "2px";
-        btn1.style.fontWeight = 400;
-        btn1.style.cursor = "pointer";
-        btn1.style.textDecoration = "none";
-        btn1.style.borderColor = "#1E9FFF";
-        btn1.style.backgroundColor = "#1E9FFF";
-        btn1.style.color = "#fff";
-        btn1.style.display = "inline-block";
+        btn1.style.cssText=`
+            height:28px;
+            line-height:28px;
+            margin:5px 5px 0;
+            padding:0 15px;
+            border:1px solid #1E9FFF;
+            border-radius:2px;
+            font-weight:400;
+            cursor:pointer;
+            text-decoration:none;
+            background-color:#1E9FFF;
+            color:#fff;
+            display:inline-block;
+
+        `
         btn1.innerText = content;
         return btn1;
     }
