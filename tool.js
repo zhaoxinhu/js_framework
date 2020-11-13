@@ -15,6 +15,10 @@
         _sendRequest(url, true, null, handler, errorHandler, "get");
     };
 
+    TOOL.ajax.get = function(options) {
+        _sendRequest(options.url, true, null, options.success, options.error, "get");
+    };
+
     /**
      * 同步get 请求
      * @param url
@@ -103,5 +107,21 @@
         $.ajax(ajaxData);
     }
 
+    // 验证手机格式
+    function _is_mobile(mobile) {
+    	if (!mobile) {
+    		alert("请输入手机号");
+    		return false;
+    	}
+    	let mobileReg = /^(((13[0-9]{1})|159|153)+\d{8})$/;
+    	return mobileReg.test(mobile);
+    }
+    let Validator = {
+    	isMobile: _is_mobile
+    };
+    TOOL.Validator = Validator;
+
+    
     window.TOOL = TOOL;
+
 })(window);
