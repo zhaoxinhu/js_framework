@@ -20,12 +20,15 @@
         validator: {
             isMobile: function(mobile) {
                 return _is_mobile(mobile);
+            },
+            isEmail: function(email) {
+                return _is_email(email);
             }
         }
     };
 
     window.TOOL = TOOL;
-    
+
     /**
      * 发送真正的http请求
      * @param url
@@ -53,12 +56,13 @@
 
     // 验证手机格式
     function _is_mobile(mobile) {
-    	if (!mobile) {
-    		alert("请输入手机号");
-    		return false;
-    	}
     	let mobileReg = /^(((13[0-9]{1})|159|153)+\d{8})$/;
     	return mobileReg.test(mobile);
+    }
+    // 验证邮箱
+    function _is_email(email) {
+        let reg = /^\w{3,}@\w+(\.\w+)+$/;
+        return reg.test(email);
     }
 
 
